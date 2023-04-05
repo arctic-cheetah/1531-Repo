@@ -9,6 +9,6 @@ fi
 
 echo "var ITERATION = '$1'" > build/config.js
 echo "var BACKEND_PORT = '$2'" >> build/config.js
-echo "var DEPLOYED_URL = 'https://example.alwaysdata.net'" >> build/config.js
+echo "var DEPLOYED_URL = 'https://colossal-ruddy-swoop.glitch.me'" >> build/config.js
 
 npx serve -s build

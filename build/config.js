@@ -1,3 +1,4 @@
+
 var ITERATION = '3'
-var BACKEND_PORT = '3200'
-var DEPLOYED_URL = 'https://example.alwaysdata.net'
+var BACKEND_PORT = '3000'
+var DEPLOYED_URL = 'https://colossal-ruddy-swoop.glitch.me'
