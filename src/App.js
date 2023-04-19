@@ -22,21 +22,24 @@ import { themes } from './theme';
 function App() {
   document.title = 'UNSW Memes';
   // Get theme from user OS
-  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+  // const prefersDarkMode = useMediaQuery('(prefers-color-scheme: light)');
   const [authDetails, setAuthDetails] = React.useState(localStorage.getItem('token'));
-  localStorage.setItem('darkMode', prefersDarkMode);
+  const checkDarkMode = /true/.test(localStorage.getItem('darkMode'));
   // Set Theme here
   const [windowTheme, setWindowTheme] = useState({
-    isDark: prefersDarkMode,
+    isDark: checkDarkMode ? true : false,
     theme: themes.light,
     switchTheme
   });
   function switchTheme () {
-    setWindowTheme((prevState) => ({
-      theme: prevState.isDark ? themes.dark : themes.light,
-      isDark: !prevState.isDark,
-      switchTheme,
-    }));
+    setWindowTheme((prevState) => {
+      localStorage.setItem('darkMode', !prevState.isDark);
+      return {
+        theme: prevState.isDark ? themes.dark : themes.light,
+        isDark: !prevState.isDark,
+        switchTheme,
+      }
+    });
   }
   // -------------------------------------------------------------
   const theme = React.useMemo(
