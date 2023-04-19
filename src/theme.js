@@ -1,6 +1,4 @@
 import { red } from '@material-ui/core/colors';
-import { createTheme } from '@material-ui/core/styles';
-
 
 export const themes = {
   light: {
@@ -19,25 +17,17 @@ export const themes = {
   },
   dark: {
     primary: {
-      main: '#23368f',
+      main: '#77adf7',
     },
     secondary: {
-      main: '#5f93d8',
+      main: '#73acfa',
     },
     error: {
       main: red.A400,
     },
     background: {
-      default: '#131516',
+      default: '#303030',
     },
-    color: '#FFFFFF'
   }
 }
 
-
-// A custom theme for this app
-const theme = createTheme({
-  palette: themes.dark
-});
-
-export default theme;

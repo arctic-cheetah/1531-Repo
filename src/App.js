@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import './App.css';
 import { AuthProvider } from './AuthContext';
 import { DarkModeProvider } from './DarkModeContext';
-import { themes } from './theme';
 import './axios';
 import ProtectedRoute from './components/Layout/ProtectedRoute';
 import ChannelPage from './pages/ChannelPage';
@@ -18,22 +17,40 @@ import SearchPage from './pages/SearchPage';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { createTheme, ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import { red } from '@material-ui/core/colors';
 
-
-// export class DarkMode extends React.Component {
-//   // State also contains the updater function so it will
-//   // be passed down into the context provider
-//   state = {
-//     theme: false,
-//     isDark: false
-//   };
-//   toggleTheme = (e) => {
-//     console.log('hello');
-//     console.log(e);
-//     console.log(this.state);
-//     this.setState({ isDark: true, theme: true});
-//   };
-// }
+export const themes = {
+  type: 'light',
+  light: {
+    primary: {
+      main: '#556cd6',
+    },
+    secondary: {
+      main: '#19857b',
+    },
+    error: {
+      main: red.A400,
+    },
+    background: {
+      default: '#fff',
+    },
+  },
+  dark: {
+    type: 'dark',
+    primary: {
+      main: '#77adf7',
+    },
+    secondary: {
+      main: '#73acfa',
+    },
+    error: {
+      main: red.A400,
+    },
+    background: {
+      default: '#303030',
+    },
+  }
+}
 
 
 
@@ -60,10 +77,7 @@ function App() {
   const theme = React.useMemo(
     () =>
       createTheme({
-        palette: {
-          type: windowTheme.isDark ? 'dark' : 'light',
-          theme: windowTheme.isDark ? themes.dark : themes.light
-        },
+        palette: windowTheme.isDark ? themes.dark : themes.light,
       }),
     [windowTheme],
   );

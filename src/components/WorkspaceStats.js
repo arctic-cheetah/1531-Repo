@@ -1,8 +1,9 @@
 import { Typography } from '@material-ui/core';
-import React from 'react';
+import React, {useContext} from 'react';
 import { Scatter } from 'react-chartjs-2';
 import AuthContext from '../AuthContext';
 import { makeRequest } from '../utils/axios_wrapper';
+import { DarkModeContext } from '../DarkModeContext';
 
 function WorkspaceStats() {
   const token = React.useContext(AuthContext);
@@ -10,6 +11,9 @@ function WorkspaceStats() {
   const [channelsData, setChannelsData] = React.useState([]);
   const [dmsData, setDmsData] = React.useState([]);
   const [messagesData, setMessagesData] = React.useState([]);
+  const darkMode = useContext(DarkModeContext);
+  const color = darkMode.isDark ? "#FFFFFF" : "#000000";
+  
 
   React.useEffect(() => {
     makeRequest('GET', 'USERS_STATS', { token })
@@ -52,6 +56,7 @@ function WorkspaceStats() {
                   fill: false,
                   borderColor: '#742774',
                   showLine: true,
+                  color
                 },
                 {
                   label: 'Dms',
@@ -59,6 +64,7 @@ function WorkspaceStats() {
                   fill: false,
                   borderColor: '#4287f5',
                   showLine: true,
+                  color
                 },
                 {
                   label: 'Messages',
@@ -66,6 +72,7 @@ function WorkspaceStats() {
                   fill: false,
                   borderColor: '#bd2d4f',
                   showLine: true,
+                  color
                 },
               ],
             }}
