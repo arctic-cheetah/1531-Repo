@@ -1,6 +1,7 @@
 import { Button, IconButton, InputAdornment, TextField, Typography } from '@material-ui/core';
 import SendIcon from '@material-ui/icons/Send';
 import TimerIcon from '@material-ui/icons/Timer';
+import InsertEmoticonIcon from '@material-ui/icons/InsertEmoticon';
 import { makeStyles } from '@material-ui/styles';
 import React from 'react';
 import AuthContext from '../../AuthContext';
@@ -10,6 +11,7 @@ import { useStep } from '../../utils/update';
 import { StepContext } from '../Channel/ChannelMessages';
 import { StepContextDm } from '../Dm/DmMessages';
 import AddMessageTimerDialog from './AddMessageTimerDialog';
+import EmojiPicker, {EmojiStyle} from 'emoji-picker-react';
 
 const useStyles = makeStyles(theme => ({
   flex: {
@@ -41,11 +43,20 @@ function AddMessage({ channelId = -1, dmId = -1 }) {
   const [currentMessage, setCurrentMessage] = React.useState('');
   const [currentTimer, setCurrentTimer] = React.useState(TIMER_INACTIVE_VALUE);
   const [timerDialogOpen, setTimerDialogOpen] = React.useState(false);
+  const [showEmoji, setShowEmoji] = React.useState(false);
+
   const token = React.useContext(AuthContext);
   let onAdd = React.useContext(StepContext);
   let onAddDm = React.useContext(StepContextDm);
   onAdd = onAdd ? onAdd : () => {}; // sanity check
   onAddDm = onAddDm ? onAddDm : () => {}; // sanity check
+  const toggleEmoji = () => {
+    setShowEmoji(!showEmoji);
+  };
+  const getEmoji = (emojiData) => {
+    setCurrentMessage(currentMessage + emojiData.emoji);
+  }
+
 
   const isTimerSet = currentTimer !== TIMER_INACTIVE_VALUE;
 
@@ -211,6 +222,10 @@ function AddMessage({ channelId = -1, dmId = -1 }) {
               InputProps={{
                 endAdornment: (
                     <InputAdornment position="end">
+                      <IconButton>
+                        <InsertEmoticonIcon onClick={toggleEmoji}></InsertEmoticonIcon>
+                      </IconButton>
+                      
                       <IconButton
                           aria-label="toggle visibility"
                           disabled={standupRemaining > 0}
@@ -223,6 +238,7 @@ function AddMessage({ channelId = -1, dmId = -1 }) {
                 ),
               }}
           />
+          {showEmoji && <EmojiPicker emojiStyle={EmojiStyle.FACEBOOK} onEmojiClick={getEmoji} autoFocusSearch={false} width={270} height={350} previewConfig={{showPreview: false}} skinTonesDisabled/>}
           <Button
               className={classes.button}
               variant="contained"
