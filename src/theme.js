@@ -1,6 +1,7 @@
 import { red } from '@material-ui/core/colors';
 
 export const themes = {
+  type: 'light',
   light: {
     primary: {
       main: '#556cd6',
@@ -16,6 +17,7 @@ export const themes = {
     },
   },
   dark: {
+    type: 'dark',
     primary: {
       main: '#77adf7',
     },
@@ -30,4 +32,3 @@ export const themes = {
     },
   }
 }
-

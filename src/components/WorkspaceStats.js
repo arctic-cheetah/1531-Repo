@@ -11,8 +11,8 @@ function WorkspaceStats() {
   const [channelsData, setChannelsData] = React.useState([]);
   const [dmsData, setDmsData] = React.useState([]);
   const [messagesData, setMessagesData] = React.useState([]);
-  const darkMode = useContext(DarkModeContext);
-  const color = darkMode.isDark ? "#FFFFFF" : "#000000";
+  const darkMode = useContext(DarkModeContext); 
+  const color = darkMode.isDark ? "#FFFFFFEE" : "#000000EE";
   
 
   React.useEffect(() => {
@@ -56,7 +56,6 @@ function WorkspaceStats() {
                   fill: false,
                   borderColor: '#742774',
                   showLine: true,
-                  color
                 },
                 {
                   label: 'Dms',
@@ -64,7 +63,6 @@ function WorkspaceStats() {
                   fill: false,
                   borderColor: '#4287f5',
                   showLine: true,
-                  color
                 },
                 {
                   label: 'Messages',
@@ -72,17 +70,22 @@ function WorkspaceStats() {
                   fill: false,
                   borderColor: '#bd2d4f',
                   showLine: true,
-                  color
                 },
               ],
             }}
             options={{
+              legend: {
+                labels: {
+                  fontColor: color
+                }
+              },
               scales: {
                 xAxes: [{
                   title: 'time',
                   type: 'time',
                   gridLines: {
                     lineWidth: 2,
+                    color
                   },
                   time: {
                     unitStepSize: 200,
@@ -98,7 +101,18 @@ function WorkspaceStats() {
                       year: 'MMM DD',
                     },
                   },
+                  ticks: {
+                    fontColor: color
+                  }
                 }],
+                yAxes:[{
+                  gridLines: {
+                    color
+                  },
+                  ticks: {
+                    fontColor: color
+                  }
+                }]
               },
             }}
         />

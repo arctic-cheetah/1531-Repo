@@ -1,8 +1,10 @@
 import { Typography } from '@material-ui/core';
-import React from 'react';
+import React, {useContext} from 'react';
 import { Scatter } from 'react-chartjs-2';
 import AuthContext from '../../AuthContext';
 import { makeRequest } from '../../utils/axios_wrapper';
+import { DarkModeContext } from "../../DarkModeContext";
+
 
 function UserStats() {
   const token = React.useContext(AuthContext);
@@ -10,6 +12,8 @@ function UserStats() {
   const [channelsData, setChannelsData] = React.useState([]);
   const [dmsData, setDmsData] = React.useState([]);
   const [messagesData, setMessagesData] = React.useState([]);
+  const darkMode = useContext(DarkModeContext); 
+  const color = darkMode.isDark ? "#FFFFFFEE" : "#000000EE";
 
   React.useEffect(() => {
     makeRequest('GET', 'USER_STATS', { token })
@@ -70,12 +74,18 @@ function UserStats() {
               ],
             }}
             options={{
+              legend: {
+                labels: {
+                  fontColor: color
+                }
+              },
               scales: {
                 xAxes: [{
                   title: 'time',
                   type: 'time',
                   gridLines: {
                     lineWidth: 2,
+                    color
                   },
                   time: {
                     unitStepSize: 200,
@@ -91,7 +101,18 @@ function UserStats() {
                       year: 'MMM DD',
                     },
                   },
+                  ticks: {
+                    fontColor: color
+                  }
                 }],
+                yAxes:[{
+                  gridLines: {
+                    color
+                  },
+                  ticks: {
+                    fontColor: color
+                  }
+                }]
               },
             }}
         />
