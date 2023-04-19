@@ -17,12 +17,12 @@ import { makeRequest } from '../utils/axios_wrapper';
 
 const useStyles = makeStyles(theme => ({
   '@global': {
-    body: {
-      backgroundColor: theme.palette.primary.light,
-    },
+    // body: {
+    //   backgroundColor: theme.palette.primary.light,
+    // },
   },
   card: {
-    backgroundColor: theme.palette.background.paper,
+    // backgroundColor: theme.palette.background.paper,
     marginTop: theme.spacing(8),
     padding: theme.spacing(8),
     display: 'flex',
