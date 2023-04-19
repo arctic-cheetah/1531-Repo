@@ -4,7 +4,6 @@ import AuthContext from '../../AuthContext';
 
 function ProtectedRoute(props) {
   const token = React.useContext(AuthContext);
-  console.log(token);
   if (!token) {
     return <Redirect to="/login"/>;
   }

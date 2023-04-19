@@ -1,7 +1,9 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import './App.css';
 import { AuthProvider } from './AuthContext';
+import { DarkModeProvider } from './DarkModeContext';
+import { themes } from './theme';
 import './axios';
 import ProtectedRoute from './components/Layout/ProtectedRoute';
 import ChannelPage from './pages/ChannelPage';
@@ -17,26 +19,52 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { createTheme, ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
-const darkTheme = createTheme({
-  palette: {
-    mode: 'dark',
-  },
-});
+
+// export class DarkMode extends React.Component {
+//   // State also contains the updater function so it will
+//   // be passed down into the context provider
+//   state = {
+//     theme: false,
+//     isDark: false
+//   };
+//   toggleTheme = (e) => {
+//     console.log('hello');
+//     console.log(e);
+//     console.log(this.state);
+//     this.setState({ isDark: true, theme: true});
+//   };
+// }
+
+
 
 function App() {
   document.title = 'UNSW Memes';
+  // Get theme from user OS
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
   const [authDetails, setAuthDetails] = React.useState(localStorage.getItem('token'));
-  const [darkMode, setDarkMode] = React.useState(false);
-
+  localStorage.setItem('darkMode', prefersDarkMode);
+  // Set Theme here
+  const [windowTheme, setWindowTheme] = useState({
+    isDark: prefersDarkMode,
+    theme: themes.light,
+    switchTheme
+  });
+  function switchTheme () {
+    setWindowTheme((prevState) => ({
+      theme: prevState.isDark ? theme.dark : theme.light,
+      isDark: !prevState.isDark,
+      switchTheme,
+    }));
+  }
+  // -------------------------------------------------------------
   const theme = React.useMemo(
     () =>
       createTheme({
         palette: {
-          type: prefersDarkMode ? 'dark' : 'light',
+          type: windowTheme.isDark ? 'dark' : 'light',
         },
       }),
-    [prefersDarkMode],
+    [windowTheme],
   );
 
   function setAuth(token, uId) {
@@ -46,6 +74,7 @@ function App() {
   }
   return (
       <AuthProvider value={authDetails}>
+        <DarkModeProvider value={windowTheme}>
         <ThemeProvider theme={theme}>
         <CssBaseline/>
           <Router>
@@ -75,6 +104,7 @@ function App() {
             </Switch>
           </Router>
         </ThemeProvider>
+        </DarkModeProvider>
       </AuthProvider>
   );
 }

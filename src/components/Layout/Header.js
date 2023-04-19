@@ -11,7 +11,7 @@ import Admin from '../Admin';
 import NotificationList from '../NotificationList';
 import PollToggle from '../PollToggle';
 import SearchBar from '../Search/SearchBar';
-import Brightness6Icon from '@material-ui/icons/Brightness6';
+import DarkModeToggle from './DarkModeToggle';
 
 const useStyles = makeStyles(theme => ({
   appBar: {
@@ -70,9 +70,7 @@ function Header({ handleMenuToggle = () => {} }) {
           )}
           <div variant="h6" className={classes.title}></div>
           <div style={{ display: 'flex' }}>
-            <IconButton>
-              <Brightness6Icon/>
-            </IconButton>
+            <DarkModeToggle/>
             <SearchBar/>
             <PollToggle/>
             <NotificationList/>
