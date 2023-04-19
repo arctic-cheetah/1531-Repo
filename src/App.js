@@ -51,7 +51,7 @@ function App() {
   });
   function switchTheme () {
     setWindowTheme((prevState) => ({
-      theme: prevState.isDark ? theme.dark : theme.light,
+      theme: prevState.isDark ? themes.dark : themes.light,
       isDark: !prevState.isDark,
       switchTheme,
     }));
@@ -62,6 +62,7 @@ function App() {
       createTheme({
         palette: {
           type: windowTheme.isDark ? 'dark' : 'light',
+          theme: windowTheme.isDark ? themes.dark : themes.light
         },
       }),
     [windowTheme],

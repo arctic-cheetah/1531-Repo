@@ -7,10 +7,10 @@ import React, {useContext} from "react";
 import { DarkModeContext } from "../../DarkModeContext";
 
 export default function DarkModeToggle () {
-  let darkMode = useContext(DarkModeContext);
+  const darkMode = useContext(DarkModeContext);
 
   return (
-    <Button onClick={() => {darkMode.switchTheme()}}>
+    <Button onClick={darkMode.switchTheme}>
       {!darkMode.isDark ? <Brightness5Icon/> : <Brightness7Icon/>}
     </Button>
   );

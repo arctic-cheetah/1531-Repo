@@ -1,8 +1,10 @@
 import { Divider, Drawer, Hidden, Typography } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import React from 'react';
+import React, {useContext} from 'react';
 import { Link } from 'react-router-dom';
 import { drawerWidth } from '../../utils/constants';
+import { DarkModeContext } from "../../DarkModeContext";
+
 
 const useStyles = makeStyles(theme => ({
   drawer: {
@@ -23,8 +25,10 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function SideMenu({ container, children, open, setOpen }) {
+  const darkMode = useContext(DarkModeContext);
   const classes = useStyles();
   const theme = useTheme();
+  const color = darkMode.isDark ? '#FFFFFF' : '#000000';
 
   return (
       <nav className={classes.drawer} aria-label="channels">
@@ -57,8 +61,8 @@ function SideMenu({ container, children, open, setOpen }) {
               open
           >
             <div className={classes.toolbar}>
-              <Link to="/" style={{ textDecoration: 'none' }}>
-                <Typography variant="h5" noWrap>Treats</Typography>
+              <Link to="/" style={{ color, textDecoration: 'none' }}>
+                <Typography variant="h4" noWrap>UNSW 1531 MEME</Typography>
               </Link>
             </div>
             {children}
