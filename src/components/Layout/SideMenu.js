@@ -62,7 +62,7 @@ function SideMenu({ container, children, open, setOpen }) {
           >
             <div className={classes.toolbar}>
               <Link to="/" style={{ color, textDecoration: 'none' }}>
-                <Typography variant="h4" noWrap>UNSW 1531 MEME</Typography>
+                <Typography variant="h5" noWrap>1531-MEME</Typography>
               </Link>
             </div>
             {children}
