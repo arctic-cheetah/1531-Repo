@@ -11,6 +11,35 @@ function MessageReact({ messageId, reacts = [] /* [{ reactId, uIds }] */ }) {
   const token = React.useContext(AuthContext);
   let step = React.useContext(StepContext);
   let stepDm = React.useContext(StepContextDm);
+  const [users, setUsers] = React.useState([]);
+  let usersReacted = [];
+
+  
+  let thumbUpCount = 0;
+  let isReacted = false;
+  const thumbUpIndex = reacts.findIndex(react => react.reactId === 1);
+  if (thumbUpIndex !== -1) {
+    thumbUpCount = reacts[thumbUpIndex].uIds.length;
+    isReacted = reacts[thumbUpIndex].isThisUserReacted;
+    usersReacted = users.filter(u => reacts[thumbUpIndex].uIds.find(e => e === u.uId));
+  }
+
+
+  React.useEffect(() => {
+    function fetchUserData() {
+      makeRequest('GET', 'USERS_ALL', { token })
+        .then(({ data }) => {
+          setUsers(data['users']);
+        })
+        .catch(err => console.log(err));
+    }
+    fetchUserData();
+  }, [token]);
+  
+  let getUserReactedName = usersReacted.length === 0 ?
+    'No reactions' :
+    usersReacted.reduce((acc, curr) => acc + '\n' + curr.handleStr, 'Reacted by:');
+
   step = step ? step : () => {}; // sanity check
   stepDm = stepDm ? stepDm : () => {}; // sanity check
 
@@ -36,13 +65,11 @@ function MessageReact({ messageId, reacts = [] /* [{ reactId, uIds }] */ }) {
     }
   };
 
-  let thumbUpCount = 0;
-  let isReacted = false;
-  const thumbUpIndex = reacts.findIndex(react => react.reactId === 1);
-  if (thumbUpIndex !== -1) {
-    thumbUpCount = reacts[thumbUpIndex].uIds.length;
-    isReacted = reacts[thumbUpIndex].isThisUserReacted;
-  }
+  // console.log(messageId);
+  // console.log(reacts);
+  // console.log(usersReacted);
+
+
 
   return (
       <Badge
@@ -56,6 +83,7 @@ function MessageReact({ messageId, reacts = [] /* [{ reactId, uIds }] */ }) {
             size="small"
             edge="end"
             aria-label="delete"
+            title={getUserReactedName}
         >
           {isReacted ? <ThumbUpIcon fontSize="small"/> : <ThumbUpOutlinedIcon fontSize="small"/>}
         </IconButton>
