@@ -1,6 +1,7 @@
 import { Badge, IconButton } from '@material-ui/core';
-import ThumbUpIcon from '@material-ui/icons/ThumbUp';
-import ThumbUpOutlinedIcon from '@material-ui/icons/ThumbUpOutlined';
+import EmojiPicker, {EmojiStyle} from 'emoji-picker-react';
+import EmojiEmotionsIcon from '@material-ui/icons/EmojiEmotions';
+import InsertEmoticonIcon from '@material-ui/icons/InsertEmoticon';
 import React from 'react';
 import AuthContext from '../../AuthContext';
 import { makeRequest } from '../../utils/axios_wrapper';
@@ -12,6 +13,8 @@ function MessageReact({ messageId, reacts = [] /* [{ reactId, uIds }] */ }) {
   let step = React.useContext(StepContext);
   let stepDm = React.useContext(StepContextDm);
   const [users, setUsers] = React.useState([]);
+  const [showEmoji, setShowEmoji] = React.useState(false);
+
   let usersReacted = [];
 
   
@@ -23,7 +26,9 @@ function MessageReact({ messageId, reacts = [] /* [{ reactId, uIds }] */ }) {
     isReacted = reacts[thumbUpIndex].isThisUserReacted;
     usersReacted = users.filter(u => reacts[thumbUpIndex].uIds.find(e => e === u.uId));
   }
-
+  const toggleEmoji = () => {
+    setShowEmoji(!showEmoji);
+  };
 
   React.useEffect(() => {
     function fetchUserData() {
@@ -37,7 +42,7 @@ function MessageReact({ messageId, reacts = [] /* [{ reactId, uIds }] */ }) {
   }, [token]);
   
   let getUserReactedName = usersReacted.length === 0 ?
-    'No reactions' :
+    'No reactions, react to this message!' :
     usersReacted.reduce((acc, curr) => acc + '\n' + curr.handleStr, 'Reacted by:');
 
   step = step ? step : () => {}; // sanity check
@@ -78,14 +83,15 @@ function MessageReact({ messageId, reacts = [] /* [{ reactId, uIds }] */ }) {
           color="secondary"
       >
         <IconButton
-            onClick={() => messageReact(isReacted)}
+            onClick={() => {messageReact(isReacted); toggleEmoji();}}
             style={{ margin: 1 }}
             size="small"
             edge="end"
             aria-label="delete"
             title={getUserReactedName}
         >
-          {isReacted ? <ThumbUpIcon fontSize="small"/> : <ThumbUpOutlinedIcon fontSize="small"/>}
+          {showEmoji && <EmojiPicker emojiStyle={EmojiStyle.FACEBOOK} autoFocusSearch={false} width={270} height={350} previewConfig={{showPreview: false}} skinTonesDisabled/>}
+          {isReacted ? <EmojiEmotionsIcon fontSize="small"/> : <InsertEmoticonIcon fontSize="small"/>}
         </IconButton>
       </Badge>
   );
