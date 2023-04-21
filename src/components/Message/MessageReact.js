@@ -2,6 +2,7 @@ import { Badge, IconButton } from '@material-ui/core';
 import EmojiPicker, {EmojiStyle} from 'emoji-picker-react';
 import EmojiEmotionsIcon from '@material-ui/icons/EmojiEmotions';
 import InsertEmoticonIcon from '@material-ui/icons/InsertEmoticon';
+import CloseIcon from '@material-ui/icons/Close';
 import React from 'react';
 import AuthContext from '../../AuthContext';
 import { makeRequest } from '../../utils/axios_wrapper';
@@ -29,6 +30,12 @@ function MessageReact({ messageId, reacts = [] /* [{ reactId, uIds }] */ }) {
   const toggleEmoji = () => {
     setShowEmoji(!showEmoji);
   };
+  const getEmoji = (emojiData) => {
+    // Get the selected emoji and, and convert it to a number
+    let emojiCode = emojiData.emoji.codePointAt();
+    messageReact(isReacted, 1);
+  };
+
 
   React.useEffect(() => {
     function fetchUserData() {
@@ -48,7 +55,7 @@ function MessageReact({ messageId, reacts = [] /* [{ reactId, uIds }] */ }) {
   step = step ? step : () => {}; // sanity check
   stepDm = stepDm ? stepDm : () => {}; // sanity check
 
-  const messageReact = isReacted => {
+  const messageReact = (isReacted, reactId) => {
     if (isReacted) {
       makeRequest('POST', 'MESSAGE_UNREACT', {
         token,
@@ -79,20 +86,34 @@ function MessageReact({ messageId, reacts = [] /* [{ reactId, uIds }] */ }) {
   return (
       <Badge
           anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-          badgeContent={thumbUpCount}
+          badgeContent={String(thumbUpCount) + '🔔'}
           color="secondary"
       >
+
+        {showEmoji && <IconButton><CloseIcon onClick={toggleEmoji}/></IconButton>}
+
         <IconButton
-            onClick={() => {messageReact(isReacted); toggleEmoji();}}
+            onClick={() => {toggleEmoji();}}
             style={{ margin: 1 }}
             size="small"
             edge="end"
             aria-label="delete"
             title={getUserReactedName}
         >
-          {showEmoji && <EmojiPicker emojiStyle={EmojiStyle.FACEBOOK} autoFocusSearch={false} width={270} height={350} previewConfig={{showPreview: false}} skinTonesDisabled/>}
+          {showEmoji && <EmojiPicker emojiStyle={EmojiStyle.FACEBOOK} onEmojiClick={getEmoji} autoFocusSearch={false} width={270} height={350} previewConfig={{showPreview: false}} skinTonesDisabled/>}
           {isReacted ? <EmojiEmotionsIcon fontSize="small"/> : <InsertEmoticonIcon fontSize="small"/>}
         </IconButton>
+        
+                
+        <div style={{fontSize: 10}} title={getUserReactedName}>
+          2🔔
+        </div>
+        <div style={{fontSize: 10}}>
+          2🙂
+        </div>
+        
+
+        
       </Badge>
   );
 }
