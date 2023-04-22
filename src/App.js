@@ -19,6 +19,8 @@ import { createTheme, ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { themes } from './theme';
 
+// References:
+// https://mui.com/material-ui/customization/theming/
 function App() {
   document.title = 'UNSW Memes';
   // Get theme from user OS
