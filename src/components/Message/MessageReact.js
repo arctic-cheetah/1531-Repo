@@ -7,6 +7,8 @@ import AuthContext from '../../AuthContext';
 import { makeRequest } from '../../utils/axios_wrapper';
 import { StepContext } from '../Channel/ChannelMessages';
 import { StepContextDm } from '../Dm/DmMessages';
+import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
+import PanToolIcon from '@material-ui/icons/PanTool';
 import Reactions from './Reactions';
 import Moveable from 'react-moveable';
 
@@ -96,6 +98,7 @@ function MessageReact({ messageId, reacts = [] /* [{ reactId, uIds, isThisUserRe
           <div className="container" style={{zIndex: 50}}>
             <div style={{zIndex: 50}} className="target" ref={targetRef} title='Drag me!🤏'>
               <IconButton><CloseIcon onClick={toggleEmoji}/></IconButton>
+              <IconButton><DragIndicatorIcon/><PanToolIcon/></IconButton>
               <EmojiPicker emojiStyle={EmojiStyle.FACEBOOK} onEmojiClick={getEmoji} autoFocusSearch={false} width={270} height={300} previewConfig={{showPreview: false}} skinTonesDisabled/>
             </div>
             <Moveable
@@ -105,6 +108,8 @@ function MessageReact({ messageId, reacts = [] /* [{ reactId, uIds, isThisUserRe
               onDrag={e => {
                   e.target.style.transform = e.transform;
               }}
+              zoom={0}
+              renderDirections={["nw", "n", "ne", "w", "e", "sw", "s", "se"]}
             />
           </div>
         }
