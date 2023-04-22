@@ -12,6 +12,13 @@ import PanToolIcon from '@material-ui/icons/PanTool';
 import Reactions from './Reactions';
 import Moveable from 'react-moveable';
 
+// References:
+// https://stackoverflow.com/questions/62858054/how-get-real-char-code-from-an-emoji-in-javascript
+// https://www.shecodes.io/athena/9351-how-to-hide-a-button-in-react#:~:text=To%20hide%20a%20button%20in%20React%2C%20you%20can%20use%20the,class%20in%20your%20button%20element.
+// https://daybrush.com/moveable/release/latest/doc/Moveable.html#.RenderDirections
+// https://stackoverflow.com/questions/70394751/useref-in-typescript-returning-a-boolean
+// https://stackoverflow.com/questions/66788247/react-moveable-and-css-modules-cant-apply-css-styling
+// 
 function MessageReact({ messageId, reacts = [] /* [{ reactId, uIds, isThisUserReacted }] */ }) {
   const token = React.useContext(AuthContext);
   let step = React.useContext(StepContext);
@@ -108,6 +115,7 @@ function MessageReact({ messageId, reacts = [] /* [{ reactId, uIds, isThisUserRe
               onDrag={e => {
                   e.target.style.transform = e.transform;
               }}
+              // Zoom determines whether the border and drag point is shown
               zoom={0}
               renderDirections={["nw", "n", "ne", "w", "e", "sw", "s", "se"]}
             />
