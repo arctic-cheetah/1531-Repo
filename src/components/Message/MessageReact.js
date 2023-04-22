@@ -1,39 +1,38 @@
 import { Badge, IconButton } from '@material-ui/core';
 import EmojiPicker, {EmojiStyle} from 'emoji-picker-react';
 import EmojiEmotionsIcon from '@material-ui/icons/EmojiEmotions';
-import InsertEmoticonIcon from '@material-ui/icons/InsertEmoticon';
 import CloseIcon from '@material-ui/icons/Close';
 import React from 'react';
 import AuthContext from '../../AuthContext';
 import { makeRequest } from '../../utils/axios_wrapper';
 import { StepContext } from '../Channel/ChannelMessages';
 import { StepContextDm } from '../Dm/DmMessages';
+import Reactions from './Reactions';
+import Moveable from 'react-moveable';
 
-function MessageReact({ messageId, reacts = [] /* [{ reactId, uIds }] */ }) {
+function MessageReact({ messageId, reacts = [] /* [{ reactId, uIds, isThisUserReacted }] */ }) {
   const token = React.useContext(AuthContext);
   let step = React.useContext(StepContext);
   let stepDm = React.useContext(StepContextDm);
   const [users, setUsers] = React.useState([]);
   const [showEmoji, setShowEmoji] = React.useState(false);
 
-  let usersReacted = [];
+  let reactionCount = 0;
+
+  reacts.forEach(r => {
+    reactionCount += r.uIds.length;
+    r['usersReacted'] = users.filter(u => r.uIds.find(e => e === u.uId));
+  });
+  console.log(reacts);
 
   
-  let thumbUpCount = 0;
-  let isReacted = false;
-  const thumbUpIndex = reacts.findIndex(react => react.reactId === 1);
-  if (thumbUpIndex !== -1) {
-    thumbUpCount = reacts[thumbUpIndex].uIds.length;
-    isReacted = reacts[thumbUpIndex].isThisUserReacted;
-    usersReacted = users.filter(u => reacts[thumbUpIndex].uIds.find(e => e === u.uId));
-  }
   const toggleEmoji = () => {
     setShowEmoji(!showEmoji);
   };
   const getEmoji = (emojiData) => {
     // Get the selected emoji and, and convert it to a number
     let emojiCode = emojiData.emoji.codePointAt();
-    messageReact(isReacted, 1);
+    messageReact(emojiCode);
   };
 
 
@@ -48,73 +47,83 @@ function MessageReact({ messageId, reacts = [] /* [{ reactId, uIds }] */ }) {
     fetchUserData();
   }, [token]);
   
-  let getUserReactedName = usersReacted.length === 0 ?
-    'No reactions, react to this message!' :
-    usersReacted.reduce((acc, curr) => acc + '\n' + curr.handleStr, 'Reacted by:');
-
   step = step ? step : () => {}; // sanity check
   stepDm = stepDm ? stepDm : () => {}; // sanity check
 
-  const messageReact = (isReacted, reactId) => {
-    if (isReacted) {
-      makeRequest('POST', 'MESSAGE_UNREACT', {
-        token,
-        messageId: Number.parseInt(messageId),
-        reactId: 1,
-      }).then(() => {
-        step();
-        stepDm();
-      }).catch(err => console.log(err));
-    } else {
+  const messageReact = (reactId) => {
+    // Find the react for the user
+    let foundReaction = reacts.find(r => r.reactId === reactId);
+    if (foundReaction === undefined) {
       makeRequest('POST', 'MESSAGE_REACT', {
         token,
         messageId: Number.parseInt(messageId),
-        reactId: 1,
+        reactId,
       }).then(() => {
         step();
         stepDm();
       }).catch(err => console.log(err));
     }
+    else {
+      if (foundReaction.isThisUserReacted === true) {        
+        makeRequest('POST', 'MESSAGE_UNREACT', {
+          token,
+          messageId: Number.parseInt(messageId),
+          reactId,
+        }).then(() => {
+          step();
+          stepDm();
+        }).catch(err => console.log(err));
+      }
+      else {
+        makeRequest('POST', 'MESSAGE_REACT', {
+          token,
+          messageId: Number.parseInt(messageId),
+          reactId,
+        }).then(() => {
+          step();
+          stepDm();
+        }).catch(err => console.log(err));
+      }
+    } 
+    
+
   };
 
-  // console.log(messageId);
-  // console.log(reacts);
-  // console.log(usersReacted);
-
-
-
   return (
-      <Badge
-          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-          badgeContent={String(thumbUpCount) + '🔔'}
-          color="secondary"
-      >
+      <>
+        <div style={{zIndex: 11}}>
+          {showEmoji && <IconButton><CloseIcon onClick={toggleEmoji}/></IconButton>}
+          {showEmoji && <EmojiPicker emojiStyle={EmojiStyle.FACEBOOK} onEmojiClick={getEmoji} autoFocusSearch={false} width={270} height={300} previewConfig={{showPreview: false}} skinTonesDisabled/>}
+        </div>
+        <Badge
+            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+            badgeContent={reactionCount}
+            color="secondary"
+            style={{zIndex: 10}}
+        >
 
-        {showEmoji && <IconButton><CloseIcon onClick={toggleEmoji}/></IconButton>}
-
-        <IconButton
+          <IconButton
             onClick={() => {toggleEmoji();}}
             style={{ margin: 1 }}
             size="small"
             edge="end"
             aria-label="delete"
-            title={getUserReactedName}
-        >
-          {showEmoji && <EmojiPicker emojiStyle={EmojiStyle.FACEBOOK} onEmojiClick={getEmoji} autoFocusSearch={false} width={270} height={350} previewConfig={{showPreview: false}} skinTonesDisabled/>}
-          {isReacted ? <EmojiEmotionsIcon fontSize="small"/> : <InsertEmoticonIcon fontSize="small"/>}
-        </IconButton>
-        
-                
-        <div style={{fontSize: 10}} title={getUserReactedName}>
-          2🔔
-        </div>
-        <div style={{fontSize: 10}}>
-          2🙂
-        </div>
-        
+          >
+          <EmojiEmotionsIcon fontSize="small"/>
+          </IconButton>
+          
+{/*                   
+          <div style={{fontSize: 10}} title={getUserReactedName}>
+            1🔔
+          </div>
+          <div style={{fontSize: 10}}>
+            2🙂
+          </div> */}
+          {reacts.length > 0 ? <Reactions reactions={reacts}/> : null}
 
-        
-      </Badge>
+          
+        </Badge>
+    </>
   );
 }
 
