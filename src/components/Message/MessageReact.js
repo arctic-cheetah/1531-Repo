@@ -16,6 +16,7 @@ function MessageReact({ messageId, reacts = [] /* [{ reactId, uIds, isThisUserRe
   let stepDm = React.useContext(StepContextDm);
   const [users, setUsers] = React.useState([]);
   const [showEmoji, setShowEmoji] = React.useState(false);
+  const targetRef = React.useRef(null);
 
   let reactionCount = 0;
 
@@ -91,15 +92,26 @@ function MessageReact({ messageId, reacts = [] /* [{ reactId, uIds, isThisUserRe
 
   return (
       <>
-        <div style={{zIndex: 11}}>
-          {showEmoji && <IconButton><CloseIcon onClick={toggleEmoji}/></IconButton>}
-          {showEmoji && <EmojiPicker emojiStyle={EmojiStyle.FACEBOOK} onEmojiClick={getEmoji} autoFocusSearch={false} width={270} height={300} previewConfig={{showPreview: false}} skinTonesDisabled/>}
-        </div>
+        {showEmoji && 
+          <div className="container" style={{zIndex: 50}}>
+            <div style={{zIndex: 50}} className="target" ref={targetRef} title='Drag me!🤏'>
+              <IconButton><CloseIcon onClick={toggleEmoji}/></IconButton>
+              <EmojiPicker emojiStyle={EmojiStyle.FACEBOOK} onEmojiClick={getEmoji} autoFocusSearch={false} width={270} height={300} previewConfig={{showPreview: false}} skinTonesDisabled/>
+            </div>
+            <Moveable
+              target={targetRef}
+              draggable={true}
+              edgeDraggable={true}
+              onDrag={e => {
+                  e.target.style.transform = e.transform;
+              }}
+            />
+          </div>
+        }
         <Badge
             anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             badgeContent={reactionCount}
             color="secondary"
-            style={{zIndex: 10}}
         >
 
           <IconButton
