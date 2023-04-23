@@ -106,7 +106,7 @@ function MessageReact({ messageId, reacts = [] /* [{ reactId, uIds, isThisUserRe
             <div style={{zIndex: 50}} className="target" ref={targetRef} title='Drag me!🤏'>
               <IconButton><CloseIcon onClick={toggleEmoji}/></IconButton>
               <IconButton><DragIndicatorIcon/><PanToolIcon/></IconButton>
-              <EmojiPicker emojiStyle={EmojiStyle.FACEBOOK} onEmojiClick={getEmoji} autoFocusSearch={false} width={270} height={300} previewConfig={{showPreview: false}} skinTonesDisabled/>
+              <EmojiPicker emojiStyle={EmojiStyle.FACEBOOK} searchDisabled onEmojiClick={getEmoji} autoFocusSearch={false} width={270} height={300} previewConfig={{showPreview: false}} skinTonesDisabled/>
             </div>
             <Moveable
               target={targetRef}
